@@ -1,0 +1,5 @@
+.env
+.venv
+GEMINI.md
+LINER
+__pycache__/
