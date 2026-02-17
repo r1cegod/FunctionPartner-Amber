@@ -31,7 +31,7 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 3. Install dependencies:
    pip install -r requirements.txt
 4. Run:
-   python simple_bot.py
+   python my_bot.py
 
 ### Q&A:
 Why?  
