@@ -1,29 +1,33 @@
-from inputs.user import prompt_user
+from inputs.user_input import user_input
+from outputs.display import welcome, clear_thinking, show_text, show_token
 from processing.brain import brain
-from outputs.display import stream_text, show_thinking, hide_thinking, print_totals, show_welcome
 
 def main():
     total_input = 0
     total_output = 0
-    show_welcome()
+    total = 0
+    welcome()
     while True:
         try:
-            user_text = prompt_user()
-            if user_text.lower() in ["exit", "quit"]:
+            user_text = user_input()
+            if user_text.lower() in ["exit"]:
                 print("Amber: Goodbye")
+                show_token(total_input, total_output, total)
                 break
-            show_thinking()
-            response, i_tok, o_tok = brain(user_text)
-            total_input += i_tok
-            total_output += o_tok
-            hide_thinking()
-            stream_text(response)
-        except KeyboardInterrupt:
-            print("\nForce Exit detected.")
-            break
+            print("Amber: Thinking...", end="\r")
+            respond, itoken, utoken = brain(user_text)
+            total_input += itoken
+            total_output += utoken
+            total += itoken + utoken
+            clear_thinking()
+            show_text(respond)
         except Exception as e:
-            print(f"\nCRITICAL SYSTEM ERROR: {e}")
+            print(f"Amber: {e}")
+            show_token(total_input, total_output,total)
             break
-    print_totals(total_input, total_output)
+        except KeyboardInterrupt:
+            print("Amber: Goodbye")
+            show_token(total_input, total_output, total)
+            break
 if __name__ == "__main__":
     main()

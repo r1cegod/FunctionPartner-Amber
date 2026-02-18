@@ -1,4 +1,4 @@
-def prompt_user():
+def user_input():
     try:
         return input("You: ").strip()
     except (EOFError, KeyboardInterrupt):

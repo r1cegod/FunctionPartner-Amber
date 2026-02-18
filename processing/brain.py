@@ -6,27 +6,23 @@ load_dotenv()
 key = os.getenv("OPENAI_API_KEY")
 
 if not key or "sk-proj" not in key:
-    print("Error: OPENAI_API_KEY not found or invalid.")
+    print("yo something is wrong with the apikey dude")
+    sys.exit()
 
 client = OpenAI(api_key=key)
 
-def brain(mytext):
-    """
-    Sends text to OpenAI and returns content + token usage.
-    Returns: (content, prompt_tokens, completion_tokens)
-    """
+def brain(user_text):
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-mini",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": mytext}
+                {"role": "system", "content": "you are a helpful assitant"},
+                {"role": "user", "content": user_text}
             ]
         )
-        content = completion.choices[0].message.content
+        respond = completion.choices[0].message.content
         itoken = completion.usage.prompt_tokens
         utoken = completion.usage.completion_tokens
-        return content, itoken, utoken
+        return respond, itoken, utoken
     except Exception as e:
-        # Return error message and 0 tokens on failure
-        return f"Error: {e}", 0, 0
+        return f"{e}", 0, 0

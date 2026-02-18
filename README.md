@@ -17,7 +17,7 @@ Most math tools show you *what* (e.g., Desmos graphs). Amber explains **why**.
 We are building this agent from scratch to learn the fundmentals of AI engineering.
 
 - [x] Tier 1: The Chatter (Single-file connection to LLM)
-- [ ] Tier 2: The Architect (Basically broke it down in parts)
+- [x] Tier 2: The Architect (Basically broke it down in parts)
 - [ ] Tier 3: The Historian (Context/Memory Management)
 - [ ] Tier 4: The Tool User (Calculator & Function Calling)
 - [ ] Use langgraph
@@ -31,7 +31,7 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 3. Install dependencies:
    pip install -r requirements.txt
 4. Run:
-   python my_bot.py
+   python main.py
 
 ### Q&A:
 Why?  
