@@ -11,14 +11,11 @@ if not key or "sk-proj" not in key:
 
 client = OpenAI(api_key=key)
 
-def brain(user_text):
+def brain(history):
     try:
         completion = client.chat.completions.create(
             model="gpt-5-mini",
-            messages=[
-                {"role": "system", "content": "you are a helpful assitant"},
-                {"role": "user", "content": user_text}
-            ]
+            messages=history
         )
         respond = completion.choices[0].message.content
         itoken = completion.usage.prompt_tokens
