@@ -19,9 +19,10 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 - [x] Tier 1: The Chatter (Single-file connection to LLM)
 - [x] Tier 2: The Architect (Basically broke it down in parts)
 - [x] Tier 3: The Historian (Context/Memory Management)
-- [ ] Tier 4: The Tool User (Calculator & Function Calling)
-- [ ] Use langgraph
-- [ ] Finish
+- [x] Tier 4: The Tool User (Calculator & Function Calling)
+- [ ] Rebuild the simple bot on langgraph
+- [ ] Build simple Amber
+- [ ] Finish 
 - [ ] Test eh
 
 ### How to Run:
