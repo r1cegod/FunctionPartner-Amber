@@ -20,7 +20,7 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 - [x] Tier 2: The Architect (Basically broke it down in parts)
 - [x] Tier 3: The Historian (Context/Memory Management)
 - [x] Tier 4: The Tool User (Calculator & Function Calling)
-- [ ] Rebuild the simple bot on langgraph
+- [x] Rebuild the simple bot on langgraph
 - [ ] Build simple Amber
 - [ ] Finish 
 - [ ] Test eh
@@ -32,7 +32,7 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 3. Install dependencies:
    pip install -r requirements.txt
 4. Run:
-   python main.py
+   python my_bot.py
 
 ### Q&A:
 Why?  
