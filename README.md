@@ -4,7 +4,7 @@ Amber: The Function Partner
 **Amber** is an AI agent designed to explain mathematical functions not via formulas, but through visual intuition.
 
 ### Purpose:
-Most math tools show you *what* (e.g., Desmos graphs). Amber explains **why** and animate the graph to show you how changes in formula affects it.
+Most of you don't even use any graph tools (e.g., Desmos graphs). Amber explains the formula and show you the graph.
 - Why is x^2 a U-shape? (Because it's a ball thrown in the air).
 - Why does sin(x) wave? (Because it's a circle unrolled over time).
 
@@ -21,9 +21,30 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 - [x] Tier 4: The Tool User
 - [x] LangGraph rebuild
 - [x] Simple Amber v0 
-- [ ] Amber v0.1 (Finished graph tool, prompt audit) 21/2
-- [ ] Amber v0.2 (make it use vietnamese, plan to upgrade tool/sysprompt to match goal "dạy đồ thị hàm số để thi htpt" basically finish the backend mvp work) 22/2
-- [ ] Amber v0.3 (Wrap it in API so the website can talk to it, basically MAKE IT LIVE!!!)
+Days 1-2 (21-22/2): Backend Complete
+- [x] v0.1: Plotly graph tool + basic prompt
+- [ ] v0.2: Vietnamese + THPT functions ready
+
+Days 3-13 (23/2-5/3): Upgrades & Polish (2h/day)
+Build whatever makes it better. No specific plan.
+Suggested:
+- Deploy + test live
+- Real student feedback → fix
+- Compare functions feature
+- Better graph styling
+- More function types
+- Image extraction
+- Quiz mode
+- Animation
+- Whatever I discover needs improvement
+
+Day 14 (6/3): Final Audit
+- [ ] Test everything works
+- [ ] Fix any breaking issues
+- [ ] Code cleanup
+- [ ] DONE
+
+### After: Apply (You Handle This)
 
 ## SUCCESS CRITERIA
 Scholarship-ready when:
@@ -49,10 +70,6 @@ NOT required:
    pip install -r requirements.txt
 4. Run:
    python Amber.py
-
-### Actual time line:
-- Tier 1-4: 4 freaking day, I can totally rewrote the entire thing
-- Rebuilt on langgraph: 1 day, its just upgrade the brain with langgraph
 
 ### Q&A:
 Why?  
