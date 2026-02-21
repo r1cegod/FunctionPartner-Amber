@@ -2,7 +2,7 @@ from time import time
 import sys, time
 
 def welcome():
-    print("Amber raw python chatbot tier 2!")
+    print("Simple bot Amber!")
     print("Type 'exit' to quit")
     print("--------------------------------")
 
@@ -11,7 +11,7 @@ def clear_thinking():
     sys.stdout.write("\r")
     sys.stdout.write("Amber: ")
 
-def show_text(text, delay=0.04):
+def show_text(text, delay=0.02):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()

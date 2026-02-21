@@ -1,6 +1,6 @@
 from inputs.user_input import user_input
 from outputs.display import welcome, clear_thinking, show_text, show_token
-from processing.main_graph import final_state
+from processing.Amber_graph import final_state
 
 def main():
     total_input = 0
