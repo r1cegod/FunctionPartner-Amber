@@ -23,22 +23,22 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 - [x] Simple Amber v0 
 Days 1-2 (21-22/2): MVP
 - [x] v0.1: Plotly graph tool + basic prompt
-- [ ] v0.2: Deploy, test live
+- [x] v0.2: Deploy, test live
    - [x] Simple deloy
-   - [ ] Graph interaction
-   - [ ] Clean UI
+   - [x] Graph 
+   - [x] Clean UI
 
 Days 3-13 (23/2-5/3): Upgrades & Polish (2h/day)
 Build whatever makes it better. No specific plan.
 Suggested:
 - [ ] Vietnamese + THPT functions ready
-- [ ] Real student feedback → fix
 - [ ] Compare functions feature
-- [ ] Better graph styling
+- [ ] Better UI
 - [ ] More function types
 - [ ] Image extraction
 - [ ] Quiz mode
 - [ ] Animation
+- [ ] Real student feedback → fix
 - [ ] Public it
 - Whatever I discover needs improvement
 

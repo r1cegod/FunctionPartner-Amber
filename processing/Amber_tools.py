@@ -1,7 +1,15 @@
 from langchain_core.tools import tool
 from sympy import *
 from spb import *
+from sympy.parsing.sympy_parser import (
+    parse_expr,
+    standard_transformations,
+    implicit_multiplication_application,
+    convert_xor
+)
 import re
+
+trans = standard_transformations + (implicit_multiplication_application, convert_xor)
 
 @tool
 def graph_plot(equation_str: str)-> str:
@@ -9,11 +17,15 @@ def graph_plot(equation_str: str)-> str:
     try:
         x, y, a, b, c, d = symbols("x, y, a, b, c, d")
 
-        left, right = equation_str.split('=')
-        equation = Eq(sympify(left, convert_xor=True), sympify(right, convert_xor=True))
-        y_answers = solve(equation, y)
-        y_answers = y_answers[0]
-        answer = Poly(y_answers)
+        if "y" and "=" in equation_str.lower():
+            left, right = equation_str.split('=')
+            equation = Eq(parse_expr(left, transformations=trans), parse_expr(right, transformations=trans))
+            y_answers = solve(equation, y)
+            y_answers = y_answers[0]
+            answer = Poly(y_answers)
+        else:
+            y_answers = parse_expr(equation_str, transformations=trans)
+            answer = Poly(y_answers)
 
         deg = answer.degree()
         coeffs = answer.all_coeffs()
@@ -24,6 +36,7 @@ def graph_plot(equation_str: str)-> str:
             a_val, b_val, c_val = coeffs
             d_val = 0
             formula = a*x**2 + b*x + c
+
         params = {
             a: (a_val, 0, 20),
             b: (b_val, 0, 20),
@@ -31,7 +44,45 @@ def graph_plot(equation_str: str)-> str:
             d: (d_val, 0, 20)
         }
 
-        p = plot(formula, (x, -10, 10), params=params, imodule='panel', backend=PB, show=False)
+        clipped_formula = Piecewise((formula, And(formula >= -10, formula <= 10)), (nan, True))
+
+        p = plot(
+            clipped_formula, 
+            (x, -10, 10),
+            params=params,
+            imodule='panel',
+            backend=PB, 
+            show=False,
+            line_color='blue'
+        )
+
+        p.fig.update_xaxes(
+            dtick=1,
+            gridcolor='#333333', 
+            zeroline=True,
+            zerolinecolor='white',
+            zerolinewidth=2
+        )
+        p.fig.update_yaxes(
+            dtick=1,
+            gridcolor='#333333',
+            zeroline=True,
+            zerolinecolor='white',
+            zerolinewidth=2
+        )
+        p.fig.update_layout(
+            dragmode='pan',
+            plot_bgcolor='black',
+            paper_bgcolor='black',
+            font_color='white'
+        )
+        p.fig.update_traces(
+            line=dict(
+                color='#00aaff',
+                width=3
+            )
+        )
+        p.fig.layout.modebar={'remove': ['zoom', 'box', 'select', 'lasso', 'autoscale']}
         p.save("graph.html")
         return "Graph created sucessfully, tell the user that"
     except Exception as e:
