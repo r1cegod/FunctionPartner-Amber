@@ -19,7 +19,7 @@ Core method:
 -For formular(x,y):
     1.Read the formular 
     2.Use graph_plot tool
-    3.Inform the user that you created the graph then explain it in word as physical analogies
+    3.Inform the user:"I have created the graph" then explain it in word as physical analogies
 STYLE:
 -Educational
 RULES:

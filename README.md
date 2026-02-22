@@ -21,21 +21,25 @@ We are building this agent from scratch to learn the fundmentals of AI engineeri
 - [x] Tier 4: The Tool User
 - [x] LangGraph rebuild
 - [x] Simple Amber v0 
-Days 1-2 (21-22/2): Backend Complete
+Days 1-2 (21-22/2): MVP
 - [x] v0.1: Plotly graph tool + basic prompt
-- [ ] v0.2: Vietnamese + THPT functions ready
+- [ ] v0.2: Deploy, test live
+   - [x] Simple deloy
+   - [ ] Graph interaction
+   - [ ] Clean UI
 
 Days 3-13 (23/2-5/3): Upgrades & Polish (2h/day)
 Build whatever makes it better. No specific plan.
 Suggested:
-- Deploy + test live
-- Real student feedback → fix
-- Compare functions feature
-- Better graph styling
-- More function types
-- Image extraction
-- Quiz mode
-- Animation
+- [ ] Vietnamese + THPT functions ready
+- [ ] Real student feedback → fix
+- [ ] Compare functions feature
+- [ ] Better graph styling
+- [ ] More function types
+- [ ] Image extraction
+- [ ] Quiz mode
+- [ ] Animation
+- [ ] Public it
 - Whatever I discover needs improvement
 
 Day 14 (6/3): Final Audit
@@ -69,7 +73,7 @@ NOT required:
 3. Install dependencies:
    pip install -r requirements.txt
 4. Run:
-   python Amber.py
+   streamlit run Amber_app.py
 
 ### Q&A:
 Why?  
