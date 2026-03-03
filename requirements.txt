@@ -1,8 +1,9 @@
-﻿python-dotenv
-openai
+﻿# Python backend
+python-dotenv
+fastapi
+uvicorn
+pydantic
 langgraph
 langchain-openai
 langchain-core
 sympy
-plotly
-sympy_plot_backends

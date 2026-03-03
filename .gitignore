@@ -1,12 +1,31 @@
+# secrets
 .env
+
+# python
 .venv
-GEMINI.md
-LINER
 __pycache__/
+*.pyc
+
+# node
+node_modules/
+amber-frontend/node_modules/
+
+# build output
+amber-frontend/dist/
+
+# personal/dev files
+LINER
 Lego_box
+Archived
+test.py
 memory.json
 PROJECT_STATE.md
-Archived
-test.py 
+
+# generated files
+static/graph.html
+outputs/
 graph.html
 test_config.html
+
+# v0 source (reference only, not deployed)
+v0 ui/

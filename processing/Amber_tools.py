@@ -1,6 +1,5 @@
 from langchain_core.tools import tool
-from sympy import *
-from spb import *
+from sympy import symbols, Eq, solve, Poly, fraction
 from sympy.parsing.sympy_parser import (
     parse_expr,
     standard_transformations,
@@ -12,88 +11,70 @@ import re
 trans = standard_transformations + (implicit_multiplication_application, convert_xor)
 
 @tool
-def graph_plot(equation_str: str)-> str:
-    """This tool generate a visual graph for the formula you put in (str, only use 0-9 /*^.-+=) use this tool when the user tell you to 'visualize' a graph"""
+def graph_plot(equation_str: str) -> str:
+    """Parse a math formula and return its type + coefficients for the frontend to render.
+    Use this when the user wants to visualize a formula.
+    Input: formula string e.g. 'x^3 - 3x + 2', 'x^2 - 4', 'x^4 - 4x^2 + 3', '(2x+1)/(x-1)'"""
     try:
-        x, y, a, b, c, d = symbols("x, y, a, b, c, d")
+        x, y = symbols("x y")
 
-        if "y" and "=" in equation_str.lower():
-            left, right = equation_str.split('=')
-            equation = Eq(parse_expr(left, transformations=trans), parse_expr(right, transformations=trans))
-            y_answers = solve(equation, y)
-            y_answers = y_answers[0]
-            answer = Poly(y_answers)
+        # Solve for y if in equation form (e.g. "y = x^2 + 1")
+        if "y" in equation_str.lower() and "=" in equation_str.lower():
+            left, right = equation_str.split("=", 1)
+            eq = Eq(parse_expr(left, transformations=trans), parse_expr(right, transformations=trans))
+            expr = solve(eq, y)[0]
         else:
-            y_answers = parse_expr(equation_str, transformations=trans)
-            answer = Poly(y_answers)
+            expr = parse_expr(equation_str, transformations=trans)
 
-        deg = answer.degree()
-        coeffs = answer.all_coeffs()
-        if deg == 3:
-            a_val, b_val, c_val, d_val = coeffs
-            formula = a*x**3 + b*x**2 + c*x + d
+        #DETECT phanthuoc: (ax+b)/(cx+d)
+        numer, denom = fraction(expr)
+        if denom != 1:
+            p_n = Poly(numer, x)
+            p_d = Poly(denom, x)
+            if p_n.degree() == 1 and p_d.degree() == 1:
+                a_val, b_val = [float(c) for c in p_n.all_coeffs()]
+                c_val, d_val = [float(c) for c in p_d.all_coeffs()]
+                return f"GRAPH:phanthuoc:{a_val},{b_val},{c_val},{d_val}"
+            return "Error: Rational function must be linear/linear form (ax+b)/(cx+d)"
+
+        # --- Polynomial types ---
+        poly = Poly(expr, x)
+        deg = poly.degree()
+        # all_coeffs() returns [highest → lowest], zero-padded
+        all_c = [float(c) for c in poly.all_coeffs()]
+
         if deg == 2:
-            a_val, b_val, c_val = coeffs
-            d_val = 0
-            formula = a*x**2 + b*x + c
+            # bac2: y = ax² + bx + c → coefficients: [a, b, c]
+            a_val, b_val, c_val = all_c
+            return f"GRAPH:bac2:{a_val},{b_val},{c_val}"
 
-        params = {
-            a: (a_val, 0, 20),
-            b: (b_val, 0, 20),
-            c: (c_val, 0, 20),
-            d: (d_val, 0, 20)
-        }
+        elif deg == 3:
+            # bac3: y = ax³ + bx² + cx + d → coefficients: [a, b, c, d]
+            a_val, b_val, c_val, d_val = all_c
+            return f"GRAPH:bac3:{a_val},{b_val},{c_val},{d_val}"
 
-        clipped_formula = Piecewise((formula, And(formula >= -10, formula <= 10)), (nan, True))
+        elif deg == 4:
+            # bac4tp (trung phuong): y = ax⁴ + bx² + c (no odd powers)
+            # all_coeffs for degree 4: [a, x3, b, x1, c]
+            a_val, x3_val, b_val, x1_val, c_val = all_c
+            if abs(x3_val) > 0.001 or abs(x1_val) > 0.001:
+                return "Error: Degree-4 formula must have no odd powers (use ax\u2074 + bx\u00B2 + c form)"
+            return f"GRAPH:bac4tp:{a_val},{b_val},{c_val}"
 
-        p = plot(
-            clipped_formula, 
-            (x, -10, 10),
-            params=params,
-            imodule='panel',
-            backend=PB, 
-            show=False,
-            line_color='blue'
-        )
+        else:
+            return f"Error: Degree {deg} not supported. Use degree 2, 3, 4 (even only), or rational (ax+b)/(cx+d)."
 
-        p.fig.update_xaxes(
-            dtick=1,
-            gridcolor='#333333', 
-            zeroline=True,
-            zerolinecolor='white',
-            zerolinewidth=2
-        )
-        p.fig.update_yaxes(
-            dtick=1,
-            gridcolor='#333333',
-            zeroline=True,
-            zerolinecolor='white',
-            zerolinewidth=2
-        )
-        p.fig.update_layout(
-            dragmode='pan',
-            plot_bgcolor='black',
-            paper_bgcolor='black',
-            font_color='white'
-        )
-        p.fig.update_traces(
-            line=dict(
-                color='#00aaff',
-                width=3
-            )
-        )
-        p.fig.layout.modebar={'remove': ['zoom', 'box', 'select', 'lasso', 'autoscale']}
-        p.save("graph.html")
-        return "Graph created sucessfully, tell the user that"
     except Exception as e:
         return f"Error: {e}"
+
 @tool
-def calculate(expression: str)-> str:
-    """Use this tool to calculate simple math, return steps, conside number answer (not 1234.12/13 or 1234.1212121212 but 1234.12)"""
+def calculate(expression: str) -> str:
+    """Use this tool to calculate simple math, return steps, concise number answer (not 1234.12/13 or 1234.1212121212 but 1234.12)"""
     expression = expression.replace(" ", "")
     if not re.match(r'^[0-9+\-*/()**.]+$', expression):
         return "Unsafe characters detected."
     try:
+        from sympy import sympify
         math_result = sympify(expression, convert_xor=True)
         return str(float(math_result))
     except Exception as e:

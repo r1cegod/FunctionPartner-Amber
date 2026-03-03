@@ -10,8 +10,9 @@ from langchain_core.messages import SystemMessage
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 memory = MemorySaver()
-config = {"configurable": {"thread_id": "1"}}
 amber_rules = SystemMessage(content="""
 Your name is Amber, you are a spatial math explainer for visual learners:
 Core method:
@@ -35,31 +36,30 @@ TOOLS:
 - graph_plot: Generate visual graph
 - Calculate: calculate simple math
 """)
+def get_graph():
+    tools = [graph_plot, calculate]
+    tool_node = ToolNode(tools=tools)
 
-load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+    class State(TypedDict):
+        messages: Annotated[list, add_messages]
 
-tools = [graph_plot, calculate]
-tool_node = ToolNode(tools=tools)
+    llm = ChatOpenAI(model="gpt-5-mini")
+    llm_with_tools = llm.bind_tools(tools)
 
-class State(TypedDict):
-    messages: Annotated[list, add_messages]
+    def chatbot(state: State):
+        return {"messages": [llm_with_tools.invoke([amber_rules] + state["messages"])]}
 
-llm = ChatOpenAI(model="gpt-5-mini")
-llm_with_tools = llm.bind_tools(tools)
-
-def chatbot(state: State):
-    return {"messages": [llm_with_tools.invoke([amber_rules] + state["messages"])]}
-
-graph_builder = StateGraph(State)
-graph_builder.add_node("chatbot", chatbot)
-graph_builder.add_node("tools", tool_node)
-graph_builder.add_edge(START, "chatbot")
-graph_builder.add_conditional_edges("chatbot", tools_condition)
-graph_builder.add_edge("tools", "chatbot")
-bot_graph = graph_builder.compile(checkpointer=memory)
+    graph_builder = StateGraph(State)
+    graph_builder.add_node("chatbot", chatbot)
+    graph_builder.add_node("tools", tool_node)
+    graph_builder.add_edge(START, "chatbot")
+    graph_builder.add_conditional_edges("chatbot", tools_condition)
+    graph_builder.add_edge("tools", "chatbot")
+    bot_graph = graph_builder.compile(checkpointer=memory)
+    return bot_graph
 
 def final_state(user_text):
+    config = {"configurable": {"thread_id": "1"}}
     return bot_graph.invoke({
         "messages":[
             {"role": "user", "content": user_text}
